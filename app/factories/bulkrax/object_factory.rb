@@ -132,7 +132,7 @@ module Bulkrax
     def update_collection(attrs)
       object.members = members
       object.member_of_collections = member_of_collections
-      object.attributes = attrs
+      object.attributes = attrs.except(:collection_type_gid)
       object.save!
     end
 
