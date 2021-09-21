@@ -83,10 +83,10 @@ module Bulkrax
       # make_round_trippable
       self.parsed_metadata = {}
       self.parsed_metadata['id'] = hyrax_record.id
-      self.parsed_metadata[source_identifier] = hyrax_record.send(work_identifier)
+      self.parsed_metadata[source_identifier] = hyrax_record.send(work_identifier).first
       self.parsed_metadata['model'] = hyrax_record.has_model.first
       build_mapping_metadata
-      self.parsed_metadata['collection'] = hyrax_record.member_of_collections.map { |c| c.source_identifier.first }.compact.uniq.join(';')
+      self.parsed_metadata['collection'] = hyrax_record.member_of_collections.map { |c| c.send(work_identifier).first }.compact.uniq.join(';')
       unless hyrax_record.is_a?(Collection)
         self.parsed_metadata['file'] = hyrax_record.file_sets.map { |fs| filename(fs).to_s if filename(fs).present? }.compact.join('; ')
       end
