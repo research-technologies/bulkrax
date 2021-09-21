@@ -132,8 +132,15 @@ module Bulkrax
     def update_collection(attrs)
       object.members = members
       object.member_of_collections = member_of_collections
-      object.attributes = attrs
+      object.attributes = update_attributes_check(attrs)
       object.save!
+    end
+
+    def update_attributes_check(attrs)
+      attrs.except(:collection_type_gid,
+                   :title,
+                   :id,
+                   work_identifier)
     end
 
     # Collections don't respond to member_of_collections_attributes or member_of_collection_ids=
