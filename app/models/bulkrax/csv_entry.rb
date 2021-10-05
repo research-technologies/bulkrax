@@ -28,7 +28,7 @@ module Bulkrax
       # If the collection field mapping is not 'collection', add 'collection' - the parser needs it
       raw_data[:collection] = raw_data[collection_field.to_sym] if raw_data.keys.include?(collection_field.to_sym) && collection_field != 'collection'
       # If the children field mapping is not 'children', add 'children' - the parser needs it
-      raw_data[:children] = raw_data[collection_field.to_sym] if raw_data.keys.include?(children_field.to_sym) && children_field != 'children'
+      raw_data[:children] = raw_data[children_field.to_sym] if raw_data.keys.include?(children_field.to_sym) && children_field != 'children'
       return raw_data
     end
 
