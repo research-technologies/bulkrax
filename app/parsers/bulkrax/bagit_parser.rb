@@ -122,6 +122,7 @@ module Bulkrax
                 Dir.glob("#{import_file_path}/**/*").map { |d| bag(d) }
               end
       @bags.delete(nil)
+      BulkraxImporter.new(importer: importerexporter).save if @bags.blank? && importerexporter.last_run.nil?
       importerexporter.status_info(StandardError.new('No valid bags found')) if @bags.blank?
       raise StandardError, 'No valid bags found' if @bags.blank?
       return @bags
