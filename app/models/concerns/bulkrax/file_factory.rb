@@ -16,8 +16,7 @@ module Bulkrax
       import_files
     end
 
-    def file_attributes(update_files = false)
-      @update_files = update_files
+    def file_attributes
       hash = {}
       return hash if klass == Collection
       hash[:uploaded_files] = upload_ids if attributes[:file].present?
@@ -44,15 +43,25 @@ module Bulkrax
       @parsed_remote_files
     end
 
+    def is_file_existing?(file)
+      if update_files
+        if Hyrax::VERSION.to_f < 3.1
+          destroy_existing_files
+        end
+        return false
+      end
+      object.file_sets.detect { |f| f.import_url && f.import_url == file[:url] }
+    end
+
     def new_remote_files
       @new_remote_files ||= if object.present? && object.file_sets.present?
                               parsed_remote_files.select do |file|
                                 # is the url valid?
                                 is_valid = file[:url]&.match(URI::ABS_URI)
                                 # does the file already exist
-                                is_existing = object.file_sets.detect { |f| f.import_url && f.import_url == file[:url] }
-                                is_valid && !is_existing
+                                is_valid # && !is_file_existing?(file)
                               end
+
                             else
                               parsed_remote_files.select do |file|
                                 file[:url]&.match(URI::ABS_URI)
@@ -118,7 +127,7 @@ module Bulkrax
     end
 
     def update_filesets(current_file)
-      if @update_files && local_file_sets.present?
+      if update_files && local_file_sets.present?
         fileset = local_file_sets.shift
         return nil if fileset.files.first.checksum.value == Digest::SHA1.file(current_file.file.path).to_s
 

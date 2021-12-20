@@ -33,3 +33,5 @@ end
 group :lint do
   gem 'bixby'
 end
+
+gem 'tzinfo-data'

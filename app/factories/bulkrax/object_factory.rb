@@ -54,7 +54,7 @@ module Bulkrax
     end
 
     def find
-      return find_by_id if attributes[:id]
+      return find_by_id if attributes[:id].present?
       return search_by_identifier if attributes[work_identifier].present?
     end
 
@@ -113,7 +113,7 @@ module Bulkrax
     # @param [Hash] attrs the attributes to put in the environment
     # @return [Hyrax::Actors::Environment]
     def environment(attrs)
-      Hyrax::Actors::Environment.new(object, Ability.new(@user), attrs)
+      Hyrax::Actors::Environment.new(object, Ability.new(@user), attrs, update_files)
     end
 
     def work_actor
@@ -215,7 +215,7 @@ module Bulkrax
     # a way that is compatible with how the factory needs them.
     def transform_attributes
       @transform_attributes = attributes.slice(*permitted_attributes)
-      @transform_attributes.merge!(file_attributes(update_files)) if with_files
+      @transform_attributes.merge!(file_attributes) if with_files
       @transform_attributes
     end
 
